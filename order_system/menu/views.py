@@ -1,7 +1,7 @@
 from collections import defaultdict
 from django.shortcuts import render, redirect
 from .forms import OrderForm
-from .sheets import get_restaurant_names, get_sheet_by_name
+from .sheets import get_restaurant_names, get_sheet_by_name, write_orders_to_sheet
 
 
 def success_view(request):
@@ -40,6 +40,9 @@ def restaurant_list_view(request):
                     meal_counter[meal] += 1
                     seat_total[seat] += meal_price
                     total_price += meal_price
+
+        if orders:
+            write_orders_to_sheet(orders)
 
     return render(request, 'menu/restaurant_list.html', {
         'restaurants': restaurants,
