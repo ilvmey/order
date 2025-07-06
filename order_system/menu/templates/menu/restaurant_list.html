@@ -50,7 +50,7 @@
 
 <hr>
 <!-- 下面維持不變 -->
-<h3>各座號訂單明細：</h3>
+<h3>訂單明細：</h3>
 <ul>
   {% for seat, info in seat_detail_summary.items %}
     <li><strong>{{ seat }}</strong>：
@@ -64,7 +64,12 @@
   {% endfor %}
 </ul>
 
-
+<h3>餐點總計：</h3>
+<ul>
+  {% for meal, count in meal_counter.items %}
+    <li>{{ meal }}：{{ count }} 份</li>
+  {% endfor %}
+</ul>
 <p><strong>總金額：{{ total_price }} 元</strong></p>
 
 <style>

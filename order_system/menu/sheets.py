@@ -54,12 +54,15 @@ def read_orders_from_sheet():
 
     orders = []
     sorted_data = sorted(all_data, key=sort_key)
-    for row in sorted_data:
-        if len(row) >= 3:
-            seat, meal, price = row[0], row[1], row[2]
-            try:
-                price = int(price)
-            except:
-                price = 0
-            orders.append((seat, meal, price))
+    try:
+        for row in sorted_data:
+            if len(row) >= 3:
+                seat, meal, price = row[0], row[1], row[2]
+                try:
+                    price = int(price)
+                except:
+                    price = 0
+                orders.append((seat, meal, price))
+    except:
+        pass
     return orders
