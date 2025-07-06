@@ -3,4 +3,4 @@ services:
     name: order-app
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn order_project.wsgi:application
+    startCommand: gunicorn order_system.wsgi:application
