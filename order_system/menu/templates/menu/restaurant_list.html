@@ -1,0 +1,9 @@
+<!-- menu/templates/menu/restaurant_list.html -->
+<h1>請選擇餐廳</h1>
+<ul>
+  {% for name in restaurants %}
+    <li>
+      <a href="{% url 'restaurant_order' name %}">{{ name }}</a>
+    </li>
+  {% endfor %}
+</ul>
