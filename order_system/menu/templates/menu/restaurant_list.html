@@ -34,11 +34,7 @@
           <td>
             <select class="select2-multiple" name="meal_{{ seat }}[]" multiple="multiple" style="width: 100%;">
               {% for name, price in items %}
-                <option value="{{ name }}"
-                  {% if name in selected_meals|get_item:seat %}
-                    selected
-                  {% endif %}
-                >
+                <option value="{{ name }}">
                   {{ name }}（{{ price }}元）
                 </option>
               {% endfor %}
@@ -54,19 +50,20 @@
 
 <hr>
 <!-- 下面維持不變 -->
-<h3>統計結果：</h3>
+<h3>各座號訂單明細：</h3>
 <ul>
-  {% for meal, count in meal_counter.items %}
-    <li>{{ meal }}：{{ count }} 份</li>
+  {% for seat, info in seat_detail_summary.items %}
+    <li><strong>{{ seat }}</strong>：
+      <ul>
+        {% for meal, cost in info.items %}
+          <li>{{ meal }}：{{ cost }} 元</li>
+        {% endfor %}
+        <li><strong>總計：</strong> {{ info.total }} 元</li>
+      </ul>
+    </li>
   {% endfor %}
 </ul>
 
-<h3>各座號餐費：</h3>
-<ul>
-  {% for seat, amount in seat_total.items %}
-    <li>{{ seat }}：{{ amount }} 元</li>
-  {% endfor %}
-</ul>
 
 <p><strong>總金額：{{ total_price }} 元</strong></p>
 

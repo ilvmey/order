@@ -1,6 +1,6 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 from django.shortcuts import render
-from .sheets import get_restaurant_names, get_sheet_by_name, write_orders_to_sheet
+from .sheets import get_restaurant_names, get_sheet_by_name, read_orders_from_sheet, write_orders_to_sheet
 
 
 def restaurant_list_view(request):
@@ -24,6 +24,7 @@ def restaurant_list_view(request):
     meal_counter = defaultdict(int)
     seat_total = defaultdict(int)
     total_price = 0
+    seat_meal_detail = defaultdict(list)
 
     if request.method == "POST":
         for seat in order_seats:
@@ -33,12 +34,25 @@ def restaurant_list_view(request):
                 for meal in meals:
                     meal_price = next((int(p) for n, p in items if n == meal), 0)
                     orders.append((seat, meal, meal_price))
-                    meal_counter[meal] += 1
-                    seat_total[seat] += meal_price
-                    total_price += meal_price
 
         if orders:
             write_orders_to_sheet(orders)
+
+    latest_orders = read_orders_from_sheet()
+    for seat, meal, price in latest_orders:
+        meal_counter[meal] += 1
+        seat_total[seat] += price
+        total_price += price
+        seat_meal_detail[seat].append((meal, price))
+
+    seat_detail_summary = {}
+    for seat, meals in seat_meal_detail.items():
+        # 用 Counter 統計同一個餐點被點幾次
+        meal_summary = Counter(meals)
+        seat_detail_summary[seat] = {
+            'items': [(f"{meal} × {count}", price * count) for (meal, price), count in meal_summary.items()],
+            'total': seat_total[seat]
+        }
 
     return render(request, 'menu/restaurant_list.html', {
         'restaurants': restaurants,
@@ -50,4 +64,5 @@ def restaurant_list_view(request):
         'meal_counter': dict(meal_counter),
         'seat_total': dict(seat_total),
         'total_price': total_price,
+        'seat_detail_summary': seat_detail_summary,
     })
