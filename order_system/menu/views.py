@@ -3,9 +3,6 @@ from django.shortcuts import render
 from .sheets import get_restaurant_names, get_sheet_by_name, write_orders_to_sheet
 
 
-def success_view(request):
-    return render(request, 'menu/success.html')
-
 def restaurant_list_view(request):
     restaurants = get_restaurant_names()
     order_seats = ['老師'] + [str(i) for i in range(1, 21) if i != 8]

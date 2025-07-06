@@ -37,7 +37,7 @@ def get_order_log_sheet():
 
 def write_orders_to_sheet(orders):
     sheet = get_order_log_sheet()
-    sheet.clear()
+    # sheet.clear()
     values = [[seat, meal, price] for seat, meal, price in orders]
     sheet.append_rows(values, value_input_option="USER_ENTERED")
 

@@ -1,7 +1,7 @@
 {% load custom_tags %}
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<h1>升降機114-2訂餐系統</h1>
 <h1>請選擇餐廳</h1>
 
 <form method="post">
@@ -32,7 +32,7 @@
         <tr>
           <td>{{ seat }}</td>
           <td>
-            <select class="select2-multiple" name="meal_{{ seat }}[]" multiple="multiple" style="width: 100%;" onchange="this.form.submit()">
+            <select class="select2-multiple" name="meal_{{ seat }}[]" multiple="multiple" style="width: 100%;">
               {% for name, price in items %}
                 <option value="{{ name }}"
                   {% if name in selected_meals|get_item:seat %}
@@ -49,6 +49,7 @@
       </tbody>
     </table>
   </div>
+  <button type="submit">送出</button>
 </form>
 
 <hr>

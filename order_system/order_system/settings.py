@@ -15,7 +15,23 @@ from decouple import config
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+env = os.getenv('ENV')
+if env == 'dev':
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join('/mnt/data', 'db.sqlite3'),
+        }
+    }
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +41,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-$(6!a0b5cdqfwn(o&u6(60=#r+^obf9(s##xx9pt#yvi9w=j^!"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env == 'dev'
 
 ALLOWED_HOSTS = ['order-x161.onrender.com', 'localhost']
 
@@ -75,12 +91,7 @@ WSGI_APPLICATION = "order_system.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+
 
 
 # Password validation
