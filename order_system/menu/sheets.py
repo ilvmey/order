@@ -41,12 +41,20 @@ def write_orders_to_sheet(orders):
     values = [[seat, meal, price] for seat, meal, price in orders]
     sheet.append_rows(values, value_input_option="USER_ENTERED")
 
+def sort_key(row):
+    seat = row[0]
+    if seat == '老師':
+        return -1  # 放最前面
+    return int(seat)
+
+
 def read_orders_from_sheet():
     sheet = get_order_log_sheet()
     all_data = sheet.get_all_values()
 
     orders = []
-    for row in all_data:
+    sorted_data = sorted(all_data, key=sort_key)
+    for row in sorted_data:
         if len(row) >= 3:
             seat, meal, price = row[0], row[1], row[2]
             try:

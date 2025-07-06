@@ -1,5 +1,7 @@
 from collections import defaultdict, Counter
-from django.shortcuts import render
+from urllib.parse import urlencode
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from .sheets import get_restaurant_names, get_sheet_by_name, read_orders_from_sheet, write_orders_to_sheet
 
 
@@ -37,6 +39,8 @@ def restaurant_list_view(request):
 
         if orders:
             write_orders_to_sheet(orders)
+        query_string = urlencode({'restaurant': selected_restaurant})
+        return redirect(f"{reverse('restaurant_list')}?{query_string}")
 
     latest_orders = read_orders_from_sheet()
     for seat, meal, price in latest_orders:
