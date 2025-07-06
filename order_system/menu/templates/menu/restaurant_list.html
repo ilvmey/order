@@ -1,9 +1,32 @@
-<!-- menu/templates/menu/restaurant_list.html -->
 <h1>請選擇餐廳</h1>
-<ul>
-  {% for name in restaurants %}
-    <li>
-      <a href="{% url 'restaurant_order' name %}">{{ name }}</a>
-    </li>
-  {% endfor %}
-</ul>
+
+<form method="post">
+  {% csrf_token %}
+  <select name="restaurant" required>
+    <option value="" hidden {% if not selected_restaurant %}selected{% endif %}>今天吃什麼？</option>
+    {% for name in restaurants %}
+      <option value="{{ name }}" {% if name == selected_restaurant %}selected{% endif %}>{{ name }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">查詢菜單</button>
+</form>
+
+{% if items %}
+  <h2>{{ selected_restaurant }} 的菜單</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>品項</th>
+        <th>價格</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for name, price in items %}
+        <tr>
+          <td>{{ name }}</td>
+          <td>{{ price }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
