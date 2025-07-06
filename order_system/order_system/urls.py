@@ -21,6 +21,6 @@ from menu import views
 
 urlpatterns = [
     path('', views.restaurant_list_view, name='restaurant_list'),
-    path('restaurant/<str:restaurant_name>/order/', views.restaurant_order_view, name='restaurant_order'),
-    path('success/', views.success_view, name='success'),
+    # path('restaurant/<str:restaurant_name>/order/', views.restaurant_order_view, name='restaurant_order'),
+    # path('success/', views.success_view, name='success'),
 ]

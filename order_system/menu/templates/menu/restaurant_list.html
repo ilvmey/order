@@ -2,31 +2,76 @@
 
 <form method="post">
   {% csrf_token %}
-  <select name="restaurant" required>
+  <select name="restaurant" required onchange="this.form.submit()">
     <option value="" hidden {% if not selected_restaurant %}selected{% endif %}>今天吃什麼？</option>
     {% for name in restaurants %}
       <option value="{{ name }}" {% if name == selected_restaurant %}selected{% endif %}>{{ name }}</option>
     {% endfor %}
   </select>
-  <button type="submit">查詢菜單</button>
 </form>
 
-{% if items %}
-  <h2>{{ selected_restaurant }} 的菜單</h2>
+
+<h2>訂購 {{ selected_restaurant }} 的便當</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <input type="hidden" name="restaurant" value="{{ selected_restaurant }}">
   <table>
     <thead>
       <tr>
-        <th>品項</th>
-        <th>價格</th>
+        <th>座號</th>
+        <th>餐點（可多選）</th>
       </tr>
     </thead>
     <tbody>
-      {% for name, price in items %}
-        <tr>
-          <td>{{ name }}</td>
-          <td>{{ price }}</td>
-        </tr>
+      {% for seat in order_seats %}
+      <tr>
+        <td>{{ seat }}</td>
+        <td>
+          <select class="select2-multiple" name="meal_{{ seat }}[]" multiple="multiple" style="width: 300px;">
+            {% for name, price in items %}
+              <option value="{{ name }}">
+                {{ name }}（{{ price }}元）
+              </option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
-{% endif %}
+  <button type="submit">送出訂單</button>
+</form>
+
+<hr>
+<h3>統計結果：</h3>
+<ul>
+  {% for meal, count in meal_counter.items %}
+    <li>{{ meal }}：{{ count }} 份</li>
+  {% endfor %}
+</ul>
+
+<h3>各座號餐費：</h3>
+<ul>
+  {% for seat, amount in seat_total.items %}
+    <li>{{ seat }}：{{ amount }} 元</li>
+  {% endfor %}
+</ul>
+
+<p><strong>總金額：{{ total_price }} 元</strong></p>
+
+
+<!-- jQuery + Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('.select2-multiple').select2({
+      placeholder: "請選擇餐點",
+      allowClear: true,
+      width: 'resolve'
+    });
+  });
+</script>
+
