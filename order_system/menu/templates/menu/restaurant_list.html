@@ -1,3 +1,5 @@
+{% load custom_tags %}
+
 <h1>請選擇餐廳</h1>
 
 <form method="post">
@@ -28,19 +30,22 @@
       <tr>
         <td>{{ seat }}</td>
         <td>
-          <select class="select2-multiple" name="meal_{{ seat }}[]" multiple="multiple" style="width: 300px;">
-            {% for name, price in items %}
-              <option value="{{ name }}">
-                {{ name }}（{{ price }}元）
-              </option>
-            {% endfor %}
-          </select>
+<select class="select2-multiple" name="meal_{{ seat }}[]" multiple="multiple" style="width: 300px;" onchange="this.form.submit()">
+  {% for name, price in items %}
+    <option value="{{ name }}"
+      {% if name in selected_meals|get_item:seat %}
+        selected
+      {% endif %}
+    >
+      {{ name }}（{{ price }}元）
+    </option>
+  {% endfor %}
+</select>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  <button type="submit">送出訂單</button>
 </form>
 
 <hr>
