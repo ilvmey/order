@@ -1,6 +1,0 @@
-<h2>您正在為「{{ restaurant_name }}」點餐</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">送出訂單</button>
-</form>

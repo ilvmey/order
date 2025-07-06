@@ -1,5 +1,7 @@
 {% load custom_tags %}
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <h1>請選擇餐廳</h1>
 
 <form method="post">
@@ -12,43 +14,45 @@
   </select>
 </form>
 
-
 <h2>訂購 {{ selected_restaurant }} 的便當</h2>
 
 <form method="post">
   {% csrf_token %}
   <input type="hidden" name="restaurant" value="{{ selected_restaurant }}">
-  <table>
-    <thead>
-      <tr>
-        <th>座號</th>
-        <th>餐點（可多選）</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for seat in order_seats %}
-      <tr>
-        <td>{{ seat }}</td>
-        <td>
-<select class="select2-multiple" name="meal_{{ seat }}[]" multiple="multiple" style="width: 300px;" onchange="this.form.submit()">
-  {% for name, price in items %}
-    <option value="{{ name }}"
-      {% if name in selected_meals|get_item:seat %}
-        selected
-      {% endif %}
-    >
-      {{ name }}（{{ price }}元）
-    </option>
-  {% endfor %}
-</select>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>座號</th>
+          <th>餐點（可多選）</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for seat in order_seats %}
+        <tr>
+          <td>{{ seat }}</td>
+          <td>
+            <select class="select2-multiple" name="meal_{{ seat }}[]" multiple="multiple" style="width: 100%;" onchange="this.form.submit()">
+              {% for name, price in items %}
+                <option value="{{ name }}"
+                  {% if name in selected_meals|get_item:seat %}
+                    selected
+                  {% endif %}
+                >
+                  {{ name }}（{{ price }}元）
+                </option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </form>
 
 <hr>
+<!-- 下面維持不變 -->
 <h3>統計結果：</h3>
 <ul>
   {% for meal, count in meal_counter.items %}
@@ -65,6 +69,28 @@
 
 <p><strong>總金額：{{ total_price }} 元</strong></p>
 
+<style>
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 320px;
+  }
+
+  th, td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+
+  .select2-container {
+    width: 100% !important;
+  }
+</style>
 
 <!-- jQuery + Select2 -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -75,8 +101,7 @@
     $('.select2-multiple').select2({
       placeholder: "請選擇餐點",
       allowClear: true,
-      width: 'resolve'
+      width: '100%'
     });
   });
 </script>
-
